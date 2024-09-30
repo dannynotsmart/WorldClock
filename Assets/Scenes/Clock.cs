@@ -13,11 +13,11 @@ public class Clock : MonoBehaviour
     TextMeshPro textMesh;
 
     [SerializeField]
-    string location;
+    public string location;
 
     [SerializeField]
     [Range(-12f, 12f)]
-    int offset;
+    public int offset;
 
     void UpdateText(DateTime time)
     {
@@ -39,14 +39,14 @@ public class Clock : MonoBehaviour
             hours -= 12;
         }
 
-        return $"{hours}:{minutes}:{seconds} (GMT {offset})";
+        return $"{hours}:{(minutes < 10 ? "0" : "")}{minutes}:{(seconds < 10 ? "0" : "")}{seconds} (GMT {offset})";
     }
 
     void Awake()
     {
         DateTime time = DateTime.UtcNow;
         hoursPivot.localRotation =
-            Quaternion.Euler(0f, 0f, hoursToDegrees * time.Hour);
+            Quaternion.Euler(0f, 0f, hoursToDegrees * (time.Hour + offset));
         minutesPivot.localRotation =
             Quaternion.Euler(0f, 0f, minutesToDegrees * time.Minute);
         secondsPivot.localRotation =
@@ -61,7 +61,7 @@ public class Clock : MonoBehaviour
 
         TimeSpan ts = time.TimeOfDay;
         hoursPivot.localRotation =
-            Quaternion.Euler(0f, 0f, hoursToDegrees * (float)ts.TotalHours);
+            Quaternion.Euler(0f, 0f, hoursToDegrees * ((float)ts.TotalHours + offset));
         minutesPivot.localRotation =
             Quaternion.Euler(0f, 0f, minutesToDegrees * (float)ts.TotalMinutes);
         secondsPivot.localRotation =
